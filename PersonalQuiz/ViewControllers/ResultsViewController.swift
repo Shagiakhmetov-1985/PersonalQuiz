@@ -12,8 +12,6 @@ class ResultsViewController: UIViewController {
     @IBOutlet weak var animalLabel: UILabel!
     @IBOutlet weak var resultLabel: UILabel!
     
-    // 4. Избавиться от кнопки возврата назад на экране результатов
-    
     // 1. Передать сюда массив с ответами
     var answersValue: [Answer]!
     
@@ -28,7 +26,8 @@ class ResultsViewController: UIViewController {
         super.viewDidLoad()
         
         checkAnimal(answers: answersValue)
-        
+        // 4. Избавиться от кнопки возврата назад на экране результатов
+        navigationItem.setHidesBackButton(true, animated: false)
     }
     
     private func checkAnimal(answers: [Answer]) {
