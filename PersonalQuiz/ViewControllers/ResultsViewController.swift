@@ -15,34 +15,63 @@ class ResultsViewController: UIViewController {
     // 1. Передать сюда массив с ответами
     var answersValue: [Answer]!
     
-    private let questions = Question.getQuestions()
-    private var currentAnswers: [Answer] {
-        questions[questionIndex].answers
-    }
-
-    private var questionIndex = 0
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        checkAnimal(answers: answersValue)
+        result()
         // 4. Избавиться от кнопки возврата назад на экране результатов
-        navigationItem.setHidesBackButton(true, animated: false)
+        navigationItem.hidesBackButton = true
     }
+}
+
+extension ResultsViewController {
     
-    private func checkAnimal(answers: [Answer]) {
-        var animal: [AnimalType] = []
-        for valueOne in answers {
-            for valueTwo in questions[questionIndex].answers {
-                if valueOne.type == valueTwo.type {
-                    animal.append(valueOne.type)
-                }
+    private func result() {
+        //создание пустого словаря
+        var frequencyOfAnimals: [AnimalType: Int] = [:]
+        //перечисление массива и присвоение экземпляров из enum [AnimalType]
+        let animals = answersValue.map { $0.type }
+        //итерация этого же массива
+        for animal in animals {
+            //если в словаре уже имеется экземпляр, например, кролик, то выполняет
+            //условие и прибавляет ключ индекса к кролику +1
+            //в противном случае, если, например, кролика нет, то условие никогда
+            //не будет выполнено и всегда перейдет к условию else и присвоит
+            //значение ключа кролика 1, а дальше после этого будет прибавлять +1 к
+            //ключу индекса кролика
+            // 2. Определить наиболее часто встречающийся тип животного
+            if let animalTypeCount = frequencyOfAnimals[animal] {
+                frequencyOfAnimals.updateValue(animalTypeCount + 1, forKey: animal)
+            } else {
+                frequencyOfAnimals[animal] = 1
             }
         }
-        typeAnimal(animalsInAnswers: animal)
+        //сортировка наиболее часто встречающихся животных по ключу, это массив кортежей,
+        //который отсортирован в порядке убывания
+        let sortedFrequencyOfAnimals = frequencyOfAnimals.sorted { $0.value > $1.value }
+        //выбор первого элемента кортежа, который и является результатом нашего окончательного ответа
+        guard let mostFrequencyAnimal = sortedFrequencyOfAnimals.first?.key else { return }
+        //запуск функции и отсылка константы окончательного ответа в функцию и на экран
+        updateUI(with: mostFrequencyAnimal)
     }
-    // 2. Определить наиболее часто встречающийся тип животного
-    private func typeAnimal(animalsInAnswers: [AnimalType]) {
+    // 3. Отобразить результат в соответсвии с этим животным
+    private func updateUI(with animal: AnimalType?) {
+        animalLabel.text = "Вы - \(animal?.rawValue ?? "🐶")!"
+        resultLabel.text = animal?.definition ?? ""
+    }
+}
+//    private func checkAnimal(answers: [Answer]) {
+//        var animal: [AnimalType] = []
+//        for valueOne in answers {
+//            for valueTwo in questions[questionIndex].answers {
+//                if valueOne.type == valueTwo.type {
+//                    animal.append(valueOne.type)
+//                }
+//            }
+//        }
+//        typeAnimal(animalsInAnswers: animal)
+//    }
+    /*private func typeAnimal(animalsInAnswers: [AnimalType]) {
         var dogs = 0
         var cats = 0
         var rabbits = 0
@@ -129,7 +158,7 @@ class ResultsViewController: UIViewController {
             setResult(result: [AnimalType.turtle])
         }
     }
-    // 3. Отобразить результат в соответсвии с этим животным
+ 
     private func setResult(result: [AnimalType]) {
         switch result {
         case [AnimalType.dog]:
@@ -145,5 +174,4 @@ class ResultsViewController: UIViewController {
             animalLabel.text = "Вы - 🐢"
             resultLabel.text = AnimalType.turtle.definition
         }
-    }
-}
+    }*/
