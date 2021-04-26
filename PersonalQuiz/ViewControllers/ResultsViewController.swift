@@ -54,12 +54,19 @@ extension ResultsViewController {
         //запуск функции и отсылка константы окончательного ответа в функцию и на экран
         updateUI(with: mostFrequencyAnimal)
     }
+    
+    // Решение в одну строку:
+//    let mostFrequencyAnimal = Dictionary(grouping: answers) { $0.type }
+//        .sorted { $0.value.count > $1.value.count }
+//        .first?.key
+    
     // 3. Отобразить результат в соответсвии с этим животным
     private func updateUI(with animal: AnimalType?) {
         animalLabel.text = "Вы - \(animal?.rawValue ?? "🐶")!"
         resultLabel.text = animal?.definition ?? ""
     }
 }
+//это мой уродливый код :)
 //    private func checkAnimal(answers: [Answer]) {
 //        var animal: [AnimalType] = []
 //        for valueOne in answers {
